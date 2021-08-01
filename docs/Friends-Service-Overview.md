@@ -19,6 +19,8 @@ The My API provides friend-related operations for the _calling_ user, including:
 
 This API needs to identify the calling user using a security scheme, for example by bearer token. If the bearer token is valid, the API will extract the calling user's id from it and not validate it further. It will also not validate target user ids included in friendship requests.
 
+[API Doc](my-api.html)
+
 ## Bulk API
 
 The bulk API is intended to be used from other services which are interested in friendships. It implements the following operations:
@@ -26,6 +28,8 @@ The bulk API is intended to be used from other services which are interested in 
 * get friends of user(s)
 
 This API needs to identify the calling _application_, for example by a static api key.
+
+[API Doc](bulk-api.html)
 
 ## Events API
 
@@ -39,3 +43,5 @@ Operations:
 * Post(s) liked
 
 This API also needs to identify the calling _application_, for example by an api key.
+
+[API Doc](events-api.html)
