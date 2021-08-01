@@ -1,0 +1,21 @@
+title: friendspost.v1
+type: object
+description: 'A post, as seen by the friends service'
+properties:
+  id:
+    type: string
+    description: A post id. Not validated by friends service
+  createdBy:
+    type: string
+    description: A user id. Not validated by friends service.
+  likedBy:
+    type: array
+    description: Array of user ids. Not validated by friends service.
+    items:
+      type: string
+  props:
+    oneOf:
+      - type: object
+      - type: 'null'
+        properties: {}
+    description: 'Arbitrary post properties. None are guranteed, can be null.'

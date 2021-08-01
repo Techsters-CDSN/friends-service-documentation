@@ -1,0 +1,71 @@
+openapi: 3.1.0
+info:
+  title: Friends Bulk API
+  version: 1.0.0
+  description: |-
+    The bulk API is intended to be used from other services, which require friendship information.
+
+    This API needs to identify the calling _application_, by an API key passed in the query string.
+  summary: Provides friendship information for one or more users.
+  contact:
+    name: Raj Chaudhuri
+    email: raj.chaudhuri@gmail.com
+  license:
+    identifier: MIT
+    name: MIT
+servers:
+  - url: 'http://localhost:3000/bulk'
+paths:
+  /friendships:
+    post:
+      summary: Fetch Friendships
+      operationId: post-friendships
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of frienship relations.
+                minItems: 1
+                uniqueItems: true
+                x-examples:
+                  example-1:
+                    - userid: '010101'
+                      friendid: '020202'
+                items:
+                  $ref: '#/components/schemas/friendship'
+        '401':
+          description: Unauthorized
+      description: Fetches friendship information for the user ids provided in the body.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Array of user ids.
+              items:
+                type: string
+        description: Array of user ids. Friendship information for identified users are returned. Non-identified ids are ignored.
+components:
+  schemas:
+    friendship:
+      title: friendship
+      type: object
+      description: A single transitive friendship.
+      properties:
+        id:
+          type: string
+          description: A valid user id.
+        friendid:
+          type: string
+          description: Another valid user id.
+  securitySchemes:
+    appKey:
+      name: appKey
+      type: apiKey
+      in: query
+      description: API key for external service.
+security:
+  - appKey: []

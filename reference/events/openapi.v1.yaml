@@ -1,0 +1,98 @@
+openapi: 3.1.0
+info:
+  title: Friends Events API
+  version: 1.0.0
+  description: |-
+    The events API represents events in the overall application that the friends service is interested in. In actual implementation, event information may be passed around using some form messaging. For now, the events API may be called directly by the services that source these events - essentially, the operations are webhooks. Later, it may be called internally by a message processor.
+
+    This API needs to identify the calling application or service, by an API key passed in the query string.
+  summary: Allowing sinking of overall application events.
+  contact:
+    name: Raj Chaudhuri
+    email: raj.chaudhuri@gmail.com
+  license:
+    identifier: MIT
+    name: MIT
+servers:
+  - url: 'http://localhost:3000/events'
+paths:
+  /usersadded:
+    post:
+      summary: Users Added
+      operationId: post-usersadded
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      description: Inform the friends service about one or more users added to the overall system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: ../common/models/friendsuser.v1.yaml
+  /usersdeleted:
+    post:
+      summary: Users Deleted
+      operationId: post-usersdeleted
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      description: Inform the friends service about one or more users deleted from the overall system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        description: An array of user ids.
+  /postsliked:
+    post:
+      summary: ''
+      operationId: post-postsliked
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      description: Inform the friends service about one or more post likes added to the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: ../common/models/friendspost.v1.yaml
+  /postsadded:
+    post:
+      summary: ''
+      operationId: post-postsadded
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      description: Inform the friends service about one or more posts added to the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: ../common/models/friendspost.v1.yaml
+components:
+  schemas: {}
+  securitySchemes:
+    appKey:
+      name: appKey
+      type: apiKey
+      in: query
+      description: API key for external service or internal application.
+  responses: {}
+security:
+  - appKey: []

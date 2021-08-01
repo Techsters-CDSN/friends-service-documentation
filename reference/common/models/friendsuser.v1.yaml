@@ -1,0 +1,14 @@
+title: friendsuser.v1
+type: object
+description: 'A user, as seen by the friends service.'
+properties:
+  id:
+    type: string
+    description: A valid user id
+  props:
+    description: 'An extensible set of user properties, such as FullName or PhotoURL. None are guaranteed. No properties may be represented as an empty object or null.'
+    oneOf:
+      - {}
+    type:
+      - object
+      - 'null'

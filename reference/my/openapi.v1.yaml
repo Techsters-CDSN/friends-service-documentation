@@ -1,0 +1,207 @@
+openapi: 3.1.0
+info:
+  title: Friends My API
+  version: 1.0.0
+  summary: Provides friend-related operations for the _calling_ user.
+  description: |-
+    The My API provides friend-related operations for the _calling_ user, including:
+
+    * get my friends
+    * get my pending friendship requests
+    * add a new friendship request
+    * delete a pending request
+    * get my incoming requests
+    * accept an incoming request
+    * reject an incoming request
+    * get friend suggestions for me
+
+    This API needs to identify the calling user using a bearer token. If the bearer token is valid, the API will extract the calling user's id from it and not validate it further. It will also not validate target user ids included in friendship requests, when the relevant operations are called.
+  contact:
+    name: Raj Chaudhuri
+    email: raj.chaudhuri@gmail.com
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+  - url: 'http://localhost:3000/my'
+paths:
+  /friends:
+    get:
+      summary: My Friends
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/friendsuser.v1.yaml
+        '401':
+          description: Unauthorized
+      operationId: get-friends
+      description: Gets a list of users that are friends with the calling user.
+  /friendrequests:
+    get:
+      summary: Get My FriendRequests
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/friendrequest'
+        '401':
+          description: Unauthorized
+      operationId: get-friendrequests
+      description: Gets friend requests made by the calling user.
+    post:
+      summary: Add New FriendRequest
+      operationId: post-friendrequests
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/friendrequest'
+        '401':
+          description: Unauthorized
+      description: Adds a new friend request.
+      security:
+        - bearerToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/friendrequest'
+        description: A friendrequest object with a null id
+  '/friendrequests/{requestid}':
+    parameters:
+      - schema:
+          type: string
+        name: requestid
+        in: path
+        required: true
+        description: Valid friendrequest id
+    get:
+      summary: Get my FriendRequest by id
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/friendrequest'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      operationId: get-friendrequests-requestid
+      description: 'Gets a friend request made by the calling user, by request id.'
+      parameters: []
+    delete:
+      summary: Delete My FriendRequest by id
+      operationId: delete-friendrequests-requestid
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      description: Delete a friend request made by the calling user by request id.
+  /incomingrequests:
+    get:
+      summary: Get My incoming FriendRequests
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/friendrequest'
+        '401':
+          description: Unauthorized
+      operationId: get-incomingrequests
+      description: 'Gets friend requests made to the calling user. '
+  '/incomingrequests/{requestid}/accept':
+    parameters:
+      - schema:
+          type: string
+        name: requestid
+        in: path
+        required: true
+        description: Valid FriendRequest id
+    post:
+      summary: Accept incoming FriendRequest
+      operationId: post-incomingrequests-requestid-accept
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      description: Accept a friend request made to the calling user.
+  '/incomingrequests/{requestid}/reject':
+    parameters:
+      - schema:
+          type: string
+        name: requestid
+        in: path
+        required: true
+        description: A valid FriendRequest id
+    post:
+      summary: Reject incoming FriendRequest
+      operationId: post-incomingrequests-requestid-reject
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      description: Reject a friend request made to the calling user.
+  /friendsuggestions:
+    get:
+      summary: Get My friend suggestions
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../common/models/friendsuser.v1.yaml
+        '401':
+          description: Unauthorized
+      operationId: get-friendsuggestions
+      description: Gets suggested friends for the calling user.
+components:
+  schemas:
+    friendrequest:
+      title: friendrequest
+      type: object
+      properties:
+        id:
+          type: string
+          description: A service-generated unique friendrequest id
+        toUser:
+          $ref: ../common/models/friendsuser.v1.yaml
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+security:
+  - bearerToken: []
